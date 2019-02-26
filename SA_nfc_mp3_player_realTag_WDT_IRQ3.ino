@@ -4,7 +4,15 @@
    Dernière MAJ : 26/02/2019
 */
 /**************************************************************************/
-
+/*
+RealTag   WrongTag    quete
+116019    44147       lancement odyssée
+46175     10245       lancement héroisme
+50147     13011       lancement elegance
+97019     116159      fin odysse
+37147     132115      fin heroisme
+11245     121115      fin elegance
+ */
 #include <Wire.h>
 #include <Adafruit_PN532.h>
 #include <Tune.h>
