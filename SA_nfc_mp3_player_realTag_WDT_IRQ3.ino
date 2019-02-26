@@ -1,7 +1,7 @@
 /**************************************************************************/
 /*
    Boitier/livret de visite Age of Classics (MSR - Science Animation)
-   Dernière MAJ : 25/02/2019
+   Dernière MAJ : 26/02/2019
 */
 /**************************************************************************/
 
@@ -10,6 +10,7 @@
 #include <Tune.h>
 #include <SdFat.h>
 #include <avr/wdt.h>
+#include <EEPROM.h>
 
 //#define DEBUGSERIE
 
@@ -23,7 +24,8 @@ Tune player;
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
 int TR = 0; //pour définir le numéro de la piste mp3 à jouer
-int Q = 0; //pour connaitre le numéro de la quête initiée : 1-Odyssée ; 2-Héroïsme ; 3-Élégance
+byte Q = 0; //pour connaitre le numéro de la quête initiée : 1-Odyssée ; 2-Héroïsme ; 3-Élégance
+int addr = 0; // adresse EEPROM
 //variables permettant la lecture et la différenciation des tags RFID/NFC
 int long id2;
 int long id3;
@@ -101,22 +103,23 @@ void loop() {
 #endif
 
     switch (valeur) {
-      case 116019: TR = 1; Q = 1;
+      case 116019: TR = 1; EEPROM.write(addr, 1); // Q=1
 #ifdef DEBUGSERIE
         Serial.println("Lancement quête Odyssée"); Serial.println("");
 #endif
         break;
-      case 46175: TR = 2; Q = 2;
+      case 46175: TR = 2;  EEPROM.write(addr, 2); // Q=2
 #ifdef DEBUGSERIE
         Serial.println("Lancement quête Héroïsme"); Serial.println("");
 #endif
         break;
-      case 50147: TR = 3; Q = 3;
+      case 50147: TR = 3;  EEPROM.write(addr, 3); // Q=3
 #ifdef DEBUGSERIE
         Serial.println("Lancement quête Élégance"); Serial.println("");
 #endif
         break;
       case 97019:
+        Q = EEPROM.read(addr);
         if (Q == 1) { //permet de ne lancer que l'audio de la quête initiée
           TR = 4;
 #ifdef DEBUGSERIE
@@ -125,6 +128,7 @@ void loop() {
         }
         break;
       case 37147:
+        Q = EEPROM.read(addr);
         if (Q == 2) { //permet de ne lancer que l'audio de la quête initiée
           TR = 5;
 #ifdef DEBUGSERIE
@@ -133,6 +137,7 @@ void loop() {
         }
         break;
       case 11245:
+        Q = EEPROM.read(addr);
         if (Q == 3) { //permet de ne lancer que l'audio de la quête initiée
           TR = 6;
 #ifdef DEBUGSERIE
